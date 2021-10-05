@@ -1,0 +1,21 @@
+			---Arch Installation----  EFI
+
+Ruchan Yalçın /Yalova University
+
+#Prepare live usb
+
+#Keymap
+loadkeys trq /us
+
+#Verify boot mode
+ls /sys/firmware/efi/efivars
+
+#Connect Network
+ip-link
+
+!!Check Network
+ping google.com
+
+#Disk Partition
+
+fdisk --> (-l)
