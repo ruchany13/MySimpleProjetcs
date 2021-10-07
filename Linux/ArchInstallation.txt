@@ -1,4 +1,4 @@
-			---Arch Installation----  EFI
+			---Arch Installation----  (EFI)
 
 Ruchan Yalçın /Yalova University
 
@@ -10,12 +10,151 @@ loadkeys trq /us
 #Verify boot mode
 ls /sys/firmware/efi/efivars
 
-#Connect Network
+#Connect Network#
 ip-link
 
 !!Check Network
 ping google.com
 
-#Disk Partition
+#Disk Partition#
+(If you want to dual boot, EFI partition isn't necessary.)
 
-fdisk --> (-l)
+<lsblk -l> --> list of disk on system
+
+<fdisk> --> (-l)
+
+-efi partition
+
+<cfdisk>
+ {
+
+ 	sda1	 EFI storage(recommend = 260MB) / GUID = cf00 / efi
+ 	sda2	 SWAP storage(recommended = 500Mb, you can write x2 ram storage) / swap
+ 	sda3	 FILESYSTEM storage(how many want)
+	 	<write> <quit>
+  }
+
+!Check <lsblk -l>
+
+-format partition
+	EFI <mkfs.fat -F32 -m EFI /dev/sda1>
+	SWAP <mkswap -L Arch_Swap /dev/sda2> <swapon /dev/sda2>
+	FILESYSTEM <mkfs.ext4 -L Arch_Root /dev/sda3>
+!!Check <lsblk -l>
+ 
+#Mount File System#
+
+FILESYSTEM -->> mnt <mount dev/sda3 /mnt>
+<mkdir /mnt/boot/efi>
+EFI -->> /mnt/boot <mount dev/sda1 /mnt/boot>
+
+#Installation#
+
+***Select Mirror***
+
+<pacstrap /mnt base base-devel linux vim networkmanager net-tools>
+<ls /mnt/boot> 
+
+#Configure the System#
+
+-Fstab
+	<genfstab -U /mnt >> /mnt/etc/fstab>
+	!!Check <vim(nano etc.) /mnt/etc/fstab> (There are a static 
+	information about the filesystem.)
+
+-Chroot
+	<arch-chroot /mnt>
+	You connect root@archiso
+
+-Timezone
+	<ln -sf /usr/share/zoneinfo/Region/City /etc/localtime>
+	<hwclock --systohc> (generate /etc/adjtime)
+
+-Localization
+ <vim /etc/locale.gen>
+	Delete '#' in front ofthe your langugae for choose your language:
+	
+	
+ <vim /etc/locale.conf>
+	"LANGUAGE=en_US.UTF-8
+	 LANG=en_US.UTF-8
+	 LC_ALL=en_US.UTF-8"
+ <locale-gen>
+ <vim /etc/vconsole.conf>
+	"KEYMAP=trq"
+
+ <vim /etc/hostname> (Write your computer name)
+	"myhostname"
+
+ 
+ <vim/etc/hosts>
+	127.0.0.1	localhost
+	::1		localhost
+	127.0.1.1	myhostname.localdomain	myhostname
+
+ 
+		
+#Initframs#
+ <mkinitcpio -P>
+
+
+#Root Password#
+ <passwd> (Change your root password.)
+
+#Boot Loader# (Systemd)
+
+-Installation using XBOOTLDR
+ <bootctl --boot-path=/boot install>
+
+-Loader Configiration
+ <vim /boot/loader/loader.conf>
+	"default  arch.conf
+	timeout  5 --------------> boot menu time
+	"
+-Adding Loaders
+ <lsblk -l> -----> find linux file system UUID or LABEL name
+ <vim /boot/loader/entries/arch.conf>
+ 	"title	Arch Linux - Iusearchbtw  ------------------> It will be see on boot menu
+	linux   /vmlinuz-linux
+	initrd  /intel-ucode.img   --------------------------> you don't write on virtualbox etc.
+	initrd  /initramfs-linux.img
+	options root=LABEL=Arch_Root -rw -----------------------> you can also write root=UUID=5545645
+	"
+
+ <exit>
+ <unmount -R /mnt>
+ <poweroff> ------> get usb
+
+#After Installation#
+
+ <sytemctl enable NetworkManager>
+ <pacman -Syyu>
+
+-Add user
+ <adduser  -m -G wheel -s /bin/bash username > --------------> wheel gruops have root 
+ <passwd username>
+ <EDITOR=vim visudo> (Delete "#" in front of '#%wheel ALL=(ALL) ALL' . It is under the 'root ALL=(ALL) ALL') -------> now username can use sudo 
+ 
+ 
+
+ -Desktop Environment (XFCE4)
+ <pacman -S xorg xorg-server>
+ <pacman -S xfce4 xfce4-goodies>
+ <pacman -S lightdm lightdm-gtk-greeter>
+ <systemctl enable lightdm.service>
+ <reboot>
+
+ -KDE Plasma
+ <pacman -S xorg plasma plasma-wayland-session kde-applications >
+ <systemctl enable sddm.service>
+
+
+
+
+
+
+
+
+
+
+
