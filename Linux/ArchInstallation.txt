@@ -147,6 +147,7 @@ EFI -->> /mnt/boot <mount dev/sda1 /mnt/boot>
  -KDE Plasma
  <pacman -S xorg plasma plasma-wayland-session kde-applications >
  <systemctl enable sddm.service>
+ <reboot>
 
 
 
