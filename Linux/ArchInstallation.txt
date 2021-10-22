@@ -21,6 +21,7 @@ ping google.com
 
 <lsblk -l> --> list of disk on system
 
+
 <fdisk> --> (-l)
 
 -efi partition
@@ -28,7 +29,7 @@ ping google.com
 <cfdisk>
  {
 
- 	sda1	 EFI storage(recommend = 260MB) / GUID = cf00 / efi
+ 	sda1	 EFI storage(recommend = 260MB *2G) / GUID = cf00 / efi
  	sda2	 SWAP storage(recommended = 500Mb, you can write x2 ram storage) / swap
  	sda3	 FILESYSTEM storage(how many want)
 	 	<write> <quit>
@@ -37,7 +38,7 @@ ping google.com
 !Check <lsblk -l>
 
 -format partition
-	EFI <mkfs.fat -F32 -m EFI /dev/sda1>
+	EFI <mkfs.fat -F32 -m EFI /dev/sda1> ----(nOT SUCH FİLE OR DİRECTORY EFI)
 	SWAP <mkswap -L Arch_Swap /dev/sda2> <swapon /dev/sda2>
 	FILESYSTEM <mkfs.ext4 -L Arch_Root /dev/sda3>
 !!Check <lsblk -l>
@@ -45,7 +46,7 @@ ping google.com
 #Mount File System#
 
 FILESYSTEM -->> mnt <mount dev/sda3 /mnt>
-<mkdir /mnt/boot/efi>
+<mkdir /mnt/boot/efi> (İKİSİNİ DE AYNI ANDA OLUŞTURMADI /BOOT SONRA /BOOT/EFİ)
 EFI -->> /mnt/boot <mount dev/sda1 /mnt/boot>
 
 #Installation#
@@ -104,8 +105,7 @@ EFI -->> /mnt/boot <mount dev/sda1 /mnt/boot>
 #Boot Loader# (Systemd)
 
 -Installation using XBOOTLDR
- <bootctl --boot-path=/boot install>
-
+ <bootctl --boot-path=/boot install> (THERE İS ERROR0
 -Loader Configiration
  <vim /boot/loader/loader.conf>
 	"default  arch.conf
