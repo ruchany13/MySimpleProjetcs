@@ -8,4 +8,4 @@ There is some scripts and information about Linux especially Arch Linux.
 ## NewArch.sh
 You can use this script after install a new Arch Linux. Script include xfce4 downloading and settings , neofetch, gedit
 downloading.
-'You must root'
+    'You must root'
