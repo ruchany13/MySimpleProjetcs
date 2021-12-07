@@ -1,2 +1,2 @@
-#Linux
-##Some Linux scripts and text
+# Linux
+# Some Linux Scripts And Texts
